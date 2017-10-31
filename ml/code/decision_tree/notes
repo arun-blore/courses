@@ -1,0 +1,17 @@
+1. Decision trees need discrete inputs. The twitter dataset contains integers and floating point values which need to be discretized.
+2. I need an easy way to describe the range of values. Some experimentation will be required to arrive at the best ranges.
+3. To make this easy, I will create a feature description file that contains info about how each feature is discretized.
+4. File name is feature_desc.txt.
+5. Any line beginning with a # is a comment.
+6. For each feature, the following information needs to be captured:
+    1. What is the index of the feature in the .train file?
+        id:
+    2. A short string (max len 10) that describes the feature.
+        desc:
+    3. A list of ranges that discretize the feature.
+    4. A short string that describes the range.
+        range: a1,b1,s1 ; a2,b2,s1 ; 
+        the above range means
+            range1 - a1 <= feature < b1 with a description s1
+            range2 - a2 <= feature < b2 with a description s2
+            if either a1 or b1 is 'x', there is no lower/upper bound
