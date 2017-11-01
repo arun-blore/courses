@@ -25,26 +25,39 @@ def calc_entropy (data_dist) :
             entropy += -1 * (fraction) * math.log(fraction, 2)
       return entropy
 
-def classify (instance, root) :
-   if root.leaf == 1 :
-      # print "reached leaf, label_id = ", root.label_id
-      return root.label_id
-   else :
-      # print "attr_id = ", root.attr_id
-      return classify (instance, root.nbrs[instance[root.attr_id]])
-
 class decision_tree :
-   def __init__ (self, attr_names, attr_table, training_examples, max_depth = float('inf')) :
+   def __init__ (self, attr_names, attr_table, max_depth = float('inf')) :
+      self.root = None
       self.attr_table = attr_table # each element attr_table[i] of this list is a list - which contains all values that attribute i can take. The last attribute is actually the output. So the last list in attr_table is a list of all value that the output can take.
       self.attr_names = attr_names
-      self.training_examples = training_examples # each element of this list is a training example - which is represented as a list, a list of all features and the last element is the output label
+      self.training_examples = None
       self.max_depth = max_depth # max allowed depth of the tree
       self.depth = None # Actual depth of the tree (will be set when ID3 is executed)
 
-   def create_tree (self) :
+   def create_tree (self, training_examples) :
+      self.training_examples = training_examples # each element of this list is a training example - which is represented as a list, a list of all features and the last element is the output label
       examples = [i for i in range(len(self.training_examples))]
       attributes = [i for i in range(len(self.attr_table))]
-      return self.id3 (examples, attributes[:-1], 0)
+      self.root = self.id3 (examples, attributes[:-1], 0)
+
+   def check_classify_acc (self, examples) : # all should be in the form of indices
+      match_count = 0
+      for e in examples :
+         if self.classify (e) == e[-1] :
+            match_count+=1
+   
+      return match_count/float(len(examples))
+
+   def classify (self, instance) :
+      def classify_iter (instance, root) :
+         if root.leaf == 1 :
+            # print "reached leaf, label_id = ", root.label_id
+            return root.label_id
+         else :
+            # print "attr_id = ", root.attr_id
+            return classify_iter (instance, root.nbrs[instance[root.attr_id]])
+
+      return classify_iter (instance, self.root)
 
    def check_same_label (self, examples) :
       #print "check same label start"
@@ -207,3 +220,18 @@ class decision_tree :
             new_node.add_nbr(self.id3 (examples_with_value, new_attributes, depth+1))
 
       return new_node
+
+   def cross_validate (self, cv_set) :
+      tot_acc = 0
+      for i in range (len(cv_set)) :
+         test_set = cv_set [i]
+         tr_set = []
+         for j in range (len(cv_set)) :
+            if j != i :
+               tr_set += cv_set[j]
+
+         self.create_tree (tr_set)
+         tot_acc += self.check_classify_acc (test_set)
+
+      avg_acc = tot_acc / float(len(cv_set))
+      return avg_acc   
