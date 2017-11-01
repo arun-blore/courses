@@ -35,7 +35,7 @@ def read_dataset (file_name, num_features) : # num_features excluding the label
 
     return examples
 
-def make_discrete_features (examples, feat_desc_file, debug = 0) :
+def make_discrete_features (examples, feat_desc_file, feat_en_file, debug = 0) :
     # takes in a list of examples that are not discretized
     # reads the features descrption file that tells how to discretize
     # returns discreteized examples, string description of features, string description of each range
@@ -122,6 +122,17 @@ def make_discrete_features (examples, feat_desc_file, debug = 0) :
     if debug :
         print "Before Filtering"
         print_examples (disc_examples, feature_values)
+
+    f = open(feat_en_file)
+    lines = f.readlines ()
+    f.close ()
+
+    for line in lines :
+        if line[0] == '#' :
+            pass
+        else :
+            words = line[:-1].split()
+            feature_enables[int(words[0])-1] = int(words[1])
 
     # from each example, discard the features that are not enabled
     disc_examples_filtered = []

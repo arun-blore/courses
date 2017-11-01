@@ -42,13 +42,18 @@ class decision_tree :
 
    def check_classify_acc (self, examples) : # all should be in the form of indices
       match_count = 0
-      for e in examples :
-         if self.classify (e) == e[-1] :
+      # for e in examples :
+      #    if self.classify (e) == e[-1] :
+      #       match_count+=1
+
+      res = self.classify (examples)
+      for ex, pred in zip(examples, res) :
+         if ex[-1] == pred :
             match_count+=1
    
       return match_count/float(len(examples))
 
-   def classify (self, instance) :
+   def classify (self, instances) :
       def classify_iter (instance, root) :
          if root.leaf == 1 :
             # print "reached leaf, label_id = ", root.label_id
@@ -57,7 +62,11 @@ class decision_tree :
             # print "attr_id = ", root.attr_id
             return classify_iter (instance, root.nbrs[instance[root.attr_id]])
 
-      return classify_iter (instance, self.root)
+      res = []
+      for instance in instances :
+         res.append (classify_iter (instance, self.root))
+
+      return res
 
    def check_same_label (self, examples) :
       #print "check same label start"
