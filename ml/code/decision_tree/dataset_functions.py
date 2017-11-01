@@ -1,5 +1,16 @@
 #!/usr/bin/python
 
+def gen_cv_set (examples, num_splits) :
+    cv_set = []
+    l = len(examples)/float(num_splits)
+    for i in range (num_splits) :
+        s = int(i*l)
+        if i == num_splits - 1:
+            cv_set.append (examples[s:])
+        else :
+            cv_set.append (examples[s:s+int(l)])
+    return cv_set
+
 def print_examples (examples, feature_values) :
     for ex in examples :
         s = ""
@@ -135,6 +146,43 @@ def make_discrete_features (examples, feat_desc_file, debug = 0) :
         print "After Filtering"
         print_examples (disc_examples_filtered, feature_values_filtered)
 
-examples = read_dataset ("../../project/DatasetRetry/data-splits/data.train", 16)
-for ex in examples[0:10] : print ex
-make_discrete_features (examples[0:10], "feature_desc.txt", debug = 1)
+    return [disc_examples_filtered, feature_descriptions_filtered, feature_values_filtered]
+
+def gen_tree_latex (s) :
+   f = open ("tree.tex", "w")
+   tex = """
+   \documentclass{article} 
+   \usepackage{tikz}
+   \usepackage[pass, paperwidth=20in, paperheight=11in]{geometry}
+   \usetikzlibrary{trees}
+   \\begin{document}
+   \\begin{tikzpicture}[level distance=3cm,
+     level 1/.style={sibling distance=25cm},
+     level 2/.style={sibling distance=15cm},
+     level 3/.style={sibling distance=10cm},
+     level 4/.style={sibling distance=5cm},
+     level 5/.style={sibling distance=2cm},
+     level 6/.style={sibling distance=1.5cm},
+     level 8/.style={sibling distance=1.5cm},
+     level 9/.style={sibling distance=1.5cm},
+     scale = 0.25, transform shape
+      ]
+     \\"""+s+""";
+   \end{tikzpicture}
+   \end{document}"""
+   f.write(tex)
+   f.close()
+
+def print_tree (root, dec_tree) :
+   # root.print_node ()
+   if root.leaf :
+      # s = "node {"+ str(dec_tree.attr_table[-1][root.label_id])+  "} edge from parent [->] node [left] {\\tiny 1}"
+      s = "node {"+ str(dec_tree.attr_table[-1][root.label_id]) + " " + str(root.weight) +  "}"
+   else :
+      # s = "node {"+ str(dec_tree.attr_names[root.attr_id])+  "} edge from parent [->] node [left] {\\tiny 1}"
+      s = "node {"+ str(dec_tree.attr_names[root.attr_id]) + str(root.weight) +  "}"
+
+   for nbr in root.nbrs :
+      s += "child {" + print_tree (nbr, dec_tree) + "} "
+   return s
+
