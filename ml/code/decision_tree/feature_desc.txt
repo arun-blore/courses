@@ -1,68 +1,85 @@
-@ id == 0 means this is the label. This should always be the last feature in this file
+# id == 0 means this is the label. This should always be the last feature in this file
 id: 0
 desc: label
-range 0,1,not_bot ; 1,x,bot
+range: 0,1,not_bot ; 1,x,bot
+enable: 1
 @
 id: 1
 desc: scr_nam_len
 range: 0,6,l_6 ; 6,10,6_10 ; 10,x,ge_10
+enable: 1
 @
 id: 2
 desc: desc_len
 range: x,50,l_50 ; 50,x,ge_50
+enable: 1
 @
 id: 3
 desc: days
 range: 0,350,l_350 ; 350,x,ge_350
+enable: 1
 @
 id: 4
 desc: hours
 range: x,x,all
+enable: 0
 @
 id: 5
 desc: mins
 range: x,x,all
+enable: 0
 @
 id: 6
 desc: secs
 range: x,x,all
+enable: 0
 @
 id: 7
 desc: num_following
 range: 0,1000,l_1000 ; 1000,x,ge_1000
+enable: 1
 @
 id: 8
 desc: num_followers
 range: 0,1000,l_1000 ; 1000,x,ge_1000
+enable: 1
 @
 id: 9
 desc: follow ratio
 range: 0,6,l_6 ; 6,x,ge_6
+enable: 1
 @
 id: 10
 desc: num_tweets
 range: 0,100,l_100 ; 100,x,ge_100
+enable: 1
 @
 id: 11
 desc: tweets_per_day
 range: 0,5,l_5 ; 5,x,ge_5
+enable: 1
 @
 id: 12
 desc: links_in_tweet
 range:  0,0.5,l_0.5 ; 0.5,x,ge_0.5
+enable: 1
 @
 id: 13
 desc: ulinks_in_tweet
 range: 0,0.3,l_0.3 ; 0.3,x,ge_0.3
+enable: 1
 @
 id: 14
 desc: uname_in_tweet
 range: 0,0.35,l_0.35 ; 0.35,x,ge_0.35
+enable: 1
 @
 id: 15
 desc: uuname_in_tweet
 range: 0,0.15,l_0.15 ; 0.15,x,ge_0.15
+enable: 1
 @
 id: 16
 desc: delta_fol
 range: x,0,l_0 ; 0,1,l_1 ; 1,x,ge_1
+enable: 1
